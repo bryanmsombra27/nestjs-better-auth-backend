@@ -1,57 +1,19 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  Headers,
-} from '@nestjs/common';
+import { Controller, All, Req, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 import { toNodeHandler } from 'better-auth/node';
 import { auth } from 'src/lib/auth';
-import { CreateUserDto } from 'src/features/user/dto/create-user.dto';
-
-@Controller('api/auth')
+import type { Request, Response } from 'express';
+@Controller('api')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('sign-in/email')
-  async create(@Body() createAuthDto: CreateAuthDto, @Headers() headers: any) {
-    // return toNodeHandler(auth);
-    return this.authService.create(createAuthDto, headers);
-  }
-  @Post('sign-up/email')
-  async register(@Body() createUserDto: CreateUserDto) {
-    // return toNodeHandler(auth);
-    return this.authService.registerUser(createUserDto);
-  }
-  @Post('sign-out ')
-  async signOut(@Headers() headers: any) {
-    // return toNodeHandler(auth);
-    return this.authService.signOut(headers);
-  }
+  @All('auth/*')
+  async handleAuth(@Req() req: Request, @Res() res: Response) {
+    console.log('ENTRA AQUI PERROS');
+    // Si tu 'auth' es una instancia de Hono o similar que necesita el handler de Node
+    // Debes asegurarte de pasar el request y response correctamente
 
-  @Get()
-  findAll() {
-    return toNodeHandler(auth);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return toNodeHandler(auth);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateAuthDto) {
-    return toNodeHandler(auth);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return toNodeHandler(auth);
+    const handler = await toNodeHandler(auth);
+    return handler(req, res);
   }
 }
