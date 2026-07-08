@@ -5,8 +5,6 @@ import { auth } from 'src/lib/auth';
 import type { Request, Response } from 'express';
 @Controller('api')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
-
   @All('auth/*')
   async handleAuth(@Req() req: Request, @Res() res: Response) {
     console.log('ENTRA AQUI PERROS');
